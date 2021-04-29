@@ -8,13 +8,13 @@ write_to_disk = False
 
 ti.init(arch=ti.cuda)  # Try to run on GPU
 
-gui = ti.GUI("Taichi Elements", res=512, background_color=0x112F41)
+gui = ti.GUI("Taichi Elements", res=1024, background_color=0x112F41)
 
 mpm = MPMSolver(res=(128, 128))
 
 mpm.add_ellipsoid(center=[0.4, 0.4],
-                  radius=[0.2, 0.2],
-                  material=MPMSolver.material_snow)
+                  radius=[0.3, 0.3],
+                  material=MPMSolver.material_elastic)
 
 for frame in range(500):
     mpm.step(8e-3)
