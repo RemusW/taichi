@@ -1,7 +1,8 @@
  
 import taichi as ti
 import numpy as np
-from math import sqrt, isclose
+import lsys
+from math import sqrt, isclose, sin, cos, radians
 import utils
 from engine.mpm_solver import MPMSolver
 
@@ -22,7 +23,11 @@ mpm.add_surface_collider(point=(0, 0.1),
                          normal=(0, 1),
                          surface=mpm.surface_sticky)
 
-lsys = [(0,0, 0,.1), (0,.1, .1,.2), (0,.1, -.1,.2)]
+# lsys = [(0,0, 0,.1), (0,.1, .1,.2), (0,.1, -.1,.2)]
+
+axiom = "F"
+angle = 22.5
+lsysPoints = lsys.construct_points(lsys.build_string(axiom, angle, 2))
 
 def decimal_range(start, stop, increment):
     while start < stop and not isclose(start, stop):
@@ -30,29 +35,28 @@ def decimal_range(start, stop, increment):
         start += increment
 
 def build_lsys(points):
-    print(points)
     offset = .5
     for i in range(len(points)):
         size = [.01,.01]
         x1=points[i][0]
         y1=points[i][1]
-        x2=points[i][2]
-        y2=points[i][3]
+        degree = points[i][2]
+        yrun = sin(radians(degree))
+        xrun = cos(radians(degree))
+        x2=points[i][0]+xrun*.05
+        y2=points[i][1]+yrun*.05
         dist = sqrt((x2-x1)**2 + (y2-y1)**2)
-        xrun = (x2-x1)/dist
-        yrun = (y2-y1)/dist
         if(xrun != 0):
             slope = yrun/xrun
         else:
             slope = 0
         steps = .01
         for k in decimal_range(0, dist, steps):
-
             lc = [x1+k*xrun+offset, y1+k*yrun]
-            print(f'{i} {k:.2f} {dist:.2f} {steps} {yrun} {lc}')
+            # print(f'{i} {k:.2f} {dist:.2f} {yrun} {lc}')
             mpm.add_cube(lower_corner=lc, cube_size=size, material=MPMSolver.material_elastic, sample_density=16)
 
-build_lsys(lsys)
+build_lsys(lsysPoints)
 
 # mpm.add_cube(lower_corner=[.5,0], cube_size=[.1,.1], material=MPMSolver.material_elastic, color=0x111111, sample_density=16)
 

@@ -225,7 +225,7 @@ class MPMSolver:
             h = ti.exp(10 * (1.0 - self.Jp[p]))
             if self.material[
                     p] == self.material_elastic:  # jelly, make it softer
-                h = 0.3
+                h = 2
             mu, la = self.mu_0 * h, self.lambda_0 * h
             if self.material[p] == self.material_water:  # liquid
                 mu = 0.0
