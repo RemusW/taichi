@@ -10,7 +10,7 @@ write_to_disk = False
 
 ti.init(arch=ti.cuda)  # Try to run on GPU
 
-gui = ti.GUI("Taichi Elements", res=1024, background_color=0x112F41)
+gui = ti.GUI("Taichi Elements", res=1440, background_color=0x112F41)
 
 mpm = MPMSolver(res=(128, 128), unbounded=False)
 
@@ -27,7 +27,7 @@ mpm.add_surface_collider(point=(0, 0.1),
 
 axiom = "F"
 angle = 22.5
-lsysPoints = lsys.construct_points(lsys.build_string(axiom, angle, 2))
+lsysPoints = lsys.construct_points(lsys.build_string(axiom, angle, 3))
 
 def decimal_range(start, stop, increment):
     while start < stop and not isclose(start, stop):
