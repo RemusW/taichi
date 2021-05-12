@@ -223,10 +223,12 @@ class MPMSolver:
                          dt * self.C[p]) @ self.F[p]
             # Hardening coefficient: snow gets harder when compressed
             h = ti.exp(10 * (1.0 - self.Jp[p]))
-            if self.material[
-                    p] == self.material_elastic:  # jelly, make it softer
+            if self.material[p] == self.material_elastic:  # jelly, make it softer
                 h = 2
             mu, la = self.mu_0 * h, self.lambda_0 * h
+            if self.material[p] == self.material_elastic:  # jelly, make it softer
+                h = 2
+                # la = self.lambda_0 * h + 10
             if self.material[p] == self.material_water:  # liquid
                 mu = 0.0
             U, sig, V = ti.svd(self.F[p])
