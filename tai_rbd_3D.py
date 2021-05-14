@@ -1,6 +1,5 @@
 import taichi as ti
 import numpy as np
-import props as p
 from lsys_3D import Lsystem
 from math import sqrt, isclose, sin, cos, radians
 import utils
@@ -29,12 +28,12 @@ mpm.add_surface_collider(point=(0, 0.1, 0),
 #     # "F": "F+[-^F][+&F]F"
 # }
 
-# axiom = "Y"
-# angle = 25.7
-# rules = {
-#     "X": "X[-FFF][+FFF]FX",
-#     "Y": "YFX[+Y][-Y]"
-# }
+axiom = "Y"
+angle = 25.7
+rules = {
+    "X": "X[-FFF][+FFF]FX",
+    "Y": "YFX[+Y][-Y]"
+}
 
 # axiom = "X"
 # angle = 20
@@ -50,11 +49,11 @@ mpm.add_surface_collider(point=(0, 0.1, 0),
 #     "B": "+FA"
 # }
 
-length = .1
-size = .04
+length = .05
+size = .03
 
 lsysbuilder = Lsystem()
-lsysbuilder.custom(p.axiom, p.angle, p.rules, length)
+lsysbuilder.custom(axiom, angle, rules, length)
 lsysString = lsysbuilder.build_string(depth=3)
 lsysPoints = lsysbuilder.construct_points(lsysString)
 
@@ -98,11 +97,6 @@ def build_lsys(points):
 print("Building lsys")
 # mpm.add_cube(lower_corner=[0,.1,0], cube_size=[.95,1,.95], material=MPMSolver.material_water, color=0x068587, sample_density=1)
 build_lsys(lsysPoints)
-
-# mpm.add_cube((0, 1, 0.35), (0.5, 0.1, 0.5),
-#                 mpm.material_water,
-#                 color=0x8888FF, sample_density=2)
-
 
 for frame in range(20000):
     mouse = gui.get_cursor_pos()

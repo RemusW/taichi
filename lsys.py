@@ -39,31 +39,39 @@ class Lsystem:
         length = self.length
         stack = []
         bone = []
-        curr = (0,0,90)
+        factor = 1
+        curr = (0,0,90, 1)
         for char in chars:
             if char == 'F':
                 # push (curr_loc, changed_loc) to list of lines
                 bone.append(curr)
                 yrun = sin(radians(curr[2]))
                 xrun = cos(radians(curr[2]))
-
-                curr = (curr[0]+xrun*length, curr[1]+yrun*length, curr[2])
+                curr = (curr[0]+xrun*length, curr[1]+yrun*length, curr[2], 1/factor)
             elif char == '+':
                 # rotate direction positively
                 if curr[2] + angle < 360:
-                    curr = (curr[0], curr[1], curr[2] + angle)
+                    curr = (curr[0], curr[1], curr[2] + angle, curr[3])
                 else:
-                    curr = (curr[0], curr[1], curr[2] + angle - 360)
+                    curr = (curr[0], curr[1], curr[2] + angle - 360, curr[3])
             elif char == '-':
                 # rotate direction negatively
                 if curr[2] - angle >= 0:
-                    curr = (curr[0], curr[1], curr[2] - angle)
+                    curr = (curr[0], curr[1], curr[2] - angle, curr[3])
                 else:
-                    curr = (curr[0], curr[1], curr[2] - angle + 360)
+                    curr = (curr[0], curr[1], curr[2] - angle + 360, curr[3])
             elif char == '[':
                 # push curr_loc to stack
+                if factor+1 > 5:
+                    factor = 5
+                else:
+                    factor += 1
                 stack.append(curr)
             elif char == ']':
                 # set curr_loc to popped stack
+                if factor-1 < 0:
+                    factor = 0
+                else:
+                    factor -= 1
                 curr = stack.pop()
         return bone

@@ -72,7 +72,7 @@ class Lsystem:
         length = self.length
         stack = []
         bone = []
-        boneSize = .04
+        factor = 1
         currB = Bone()
         for char in chars:
             if char == 'F':
@@ -82,14 +82,14 @@ class Lsystem:
                 newPos = [0,0,0]
                 for i in range(3):
                     newPos[i] = currB.pos[i] + magDir[i]
-                currB = Bone(newPos, currB.dir, boneSize)
+                currB = Bone(newPos, currB.dir, 2/(factor+1))
             elif char == 'f':
                 # move forward but do not draw line
                 magDir = [d*length for d in currB.dir]
                 newPos = [0,0,0]
                 for i in range(3):
                     newPos[i] = currB.pos[i] + magDir[i]
-                currB = Bone(newPos, currB.dir, boneSize)
+                currB = Bone(newPos, currB.dir, 2/(factor+1))
             elif char == '+':
                 # rotate direction positively
                 currB.dir = np.matmul(self.rotateY(angle), currB.dir)
@@ -113,21 +113,25 @@ class Lsystem:
                 currB.dir = np.matmul(self.rotateY(180), currB.dir)
             elif char == '[':
                 # push curr_loc to stack
-                if boneSize - .005 > .02:
-                    boneSize = boneSize / 1.5
+                if factor+1 > 5:
+                    factor = 5
+                else:
+                    factor += 1
                 stack.append(currB)
             elif char == ']':
                 # set curr_loc to popped stack
-                if boneSize + .005 < .04:
-                    boneSize = boneSize * 1.5
+                if factor-1 < 0:
+                    factor = 0
+                else:
+                    factor -= 1
                 currB = stack.pop()
         return bone
 
 class Bone:
-    def __init__(self, pos=[0,0,0], dir=[0,1,0], size=.04):
+    def __init__(self, pos=[0,0,0], dir=[0,1,0], factor=1):
         self.pos = pos
         self.dir = np.array(dir)
-        self.size = size
+        self.factor = factor
 
 if __name__ == "__main__":
     axiom = "F"
@@ -145,7 +149,7 @@ if __name__ == "__main__":
     print(lsysString)
     for b in lsysPoints:
         print(b.pos, end="          ")
-        print(b.size)
+        print(b.factor)
 
     a = np.array([[1,2,3], [4,5,6], [7,8,9]])
     mat = lsysbuilder.rotateY(radians(angle))
