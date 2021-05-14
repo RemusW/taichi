@@ -72,6 +72,7 @@ class Lsystem:
         length = self.length
         stack = []
         bone = []
+        boneSize = .04
         currB = Bone()
         for char in chars:
             if char == 'F':
@@ -81,14 +82,14 @@ class Lsystem:
                 newPos = [0,0,0]
                 for i in range(3):
                     newPos[i] = currB.pos[i] + magDir[i]
-                currB = Bone(newPos, currB.dir)
+                currB = Bone(newPos, currB.dir, boneSize)
             elif char == 'f':
                 # move forward but do not draw line
                 magDir = [d*length for d in currB.dir]
                 newPos = [0,0,0]
                 for i in range(3):
                     newPos[i] = currB.pos[i] + magDir[i]
-                currB = Bone(newPos, currB.dir)
+                currB = Bone(newPos, currB.dir, boneSize)
             elif char == '+':
                 # rotate direction positively
                 currB.dir = np.matmul(self.rotateY(angle), currB.dir)
@@ -112,16 +113,21 @@ class Lsystem:
                 currB.dir = np.matmul(self.rotateY(180), currB.dir)
             elif char == '[':
                 # push curr_loc to stack
+                if boneSize - .005 > .02:
+                    boneSize = boneSize / 1.5
                 stack.append(currB)
             elif char == ']':
                 # set curr_loc to popped stack
+                if boneSize + .005 < .04:
+                    boneSize = boneSize * 1.5
                 currB = stack.pop()
         return bone
 
 class Bone:
-    def __init__(self, pos=[0,0,0], dir=[0,1,0]):
+    def __init__(self, pos=[0,0,0], dir=[0,1,0], size=.04):
         self.pos = pos
         self.dir = np.array(dir)
+        self.size = size
 
 if __name__ == "__main__":
     axiom = "F"
@@ -139,7 +145,7 @@ if __name__ == "__main__":
     print(lsysString)
     for b in lsysPoints:
         print(b.pos, end="          ")
-        print(b.dir)
+        print(b.size)
 
     a = np.array([[1,2,3], [4,5,6], [7,8,9]])
     mat = lsysbuilder.rotateY(radians(angle))
